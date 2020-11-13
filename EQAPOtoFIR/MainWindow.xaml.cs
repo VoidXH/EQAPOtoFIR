@@ -1,5 +1,6 @@
 ﻿using Cavern.Format;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -59,5 +60,7 @@ namespace EQAPOtoFIR {
                         minimum.IsChecked.Value);
             }
         }
+
+        private void Ad_Click(object sender, RoutedEventArgs e) => Process.Start("http://en.sbence.hu");
     }
 }

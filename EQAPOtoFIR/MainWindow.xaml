@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Equalizer APO to FIR" Height="252" Width="394">
     <Grid>
-        <GroupBox Header="Configuration" HorizontalAlignment="Left" Height="42" Margin="10,10,0,0" VerticalAlignment="Top" Width="357">
+        <GroupBox Header="Configuration" Height="42" Margin="10,10,10,0" VerticalAlignment="Top">
             <Grid>
                 <Button Content="Open file" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Open"/>
                 <Label x:Name="configFile" Content="Click this button to open an Equalizer APO config."
@@ -28,25 +28,26 @@
                 <RadioButton x:Name="float32" Content="32-bit float" HorizontalAlignment="Left" Margin="0,57,0,0" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Direction" HorizontalAlignment="Left" Height="45" Margin="220,57,0,0" VerticalAlignment="Top" Width="147">
+        <GroupBox Header="Direction" Height="45" Margin="220,57,10,0" VerticalAlignment="Top">
             <Grid>
                 <RadioButton x:Name="impulse" Content="Impulse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
                 <RadioButton x:Name="fir" Content="FIR" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,4,0,0"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Format" HorizontalAlignment="Left" Height="45" Margin="220,107,0,0" VerticalAlignment="Top" Width="147">
+        <GroupBox Header="Format" Height="45" Margin="220,107,10,0" VerticalAlignment="Top">
             <Grid>
                 <RadioButton x:Name="wav" Content="WAVE" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
                 <RadioButton x:Name="c" Content="C array" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,4,0,0"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Phase response" HorizontalAlignment="Left" Height="45" Margin="10,157,0,-5" VerticalAlignment="Top" Width="180">
+        <GroupBox Header="Phase response" HorizontalAlignment="Left" Height="45" Margin="90,157,0,0" VerticalAlignment="Top" Width="197">
             <Grid>
                 <RadioButton x:Name="minimum" Content="Minimum" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
-                <RadioButton x:Name="unchanged" Content="Unchanged" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="80,4,0,0"/>
+                <RadioButton x:Name="unchanged" Content="Unchanged" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="90,4,0,0"/>
             </Grid>
         </GroupBox>
-        <Button x:Name="export" Content="Export" HorizontalAlignment="Left" Margin="292,182,0,0" VerticalAlignment="Top" Width="75"
-                Click="Export" IsEnabled="False"/>
+        <Button Content="by VoidX" HorizontalAlignment="Left" Margin="10,173,0,0" VerticalAlignment="Top" Width="75" Click="Ad_Click"/>
+        <Button x:Name="export" Content="Export" Margin="292,173,0,0"
+                Click="Export" IsEnabled="False" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Top"/>
     </Grid>
 </Window>
