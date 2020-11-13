@@ -52,9 +52,11 @@ namespace EQAPOtoFIR {
                     bits = BitDepth.Int24;
                 ExportFormat format = impulse.IsChecked.Value ? ExportFormat.Impulse : ExportFormat.FIR;
                 if (wav.IsChecked.Value)
-                    parser.ExportWAV(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value);
+                    parser.ExportWAV(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
+                        minimum.IsChecked.Value);
                 else
-                    parser.ExportC(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value);
+                    parser.ExportC(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
+                        minimum.IsChecked.Value);
             }
         }
     }

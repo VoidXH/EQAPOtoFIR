@@ -208,7 +208,7 @@ namespace EQAPOtoFIR {
         /// <summary>
         /// Parse a biquad filter and generate an Equalizer that simulates it.
         /// </summary>
-        static Equalizer Filter(string source) {
+        static BiquadFilter Filter(string source) {
             string[] split = source.Trim().Split(' ');
             BiquadFilter filter = split[1] switch {
                 "PK" => ParsePeakingEQ(split),
@@ -227,8 +227,7 @@ namespace EQAPOtoFIR {
             };
             if (filter == null)
                 return null;
-            FilterAnalyzer analyzer = new FilterAnalyzer(filter, analyzerSampleRate);
-            return analyzer.ToEqualizer(20, 20000, 1 / 24.0, 2);
+            return filter;
         }
 
         /// <summary>

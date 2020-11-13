@@ -39,19 +39,19 @@ namespace EQAPOtoFIR {
         /// <summary>
         /// Export the filters as RIFF WAVE files.
         /// </summary>
-        public void ExportWAV(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples) {
+        public void ExportWAV(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
             for (int channel = 0; channel < result.Length; ++channel)
                 result[channel].ExportWAV(Path.Combine(path, string.Format("Channel_{0}.wav", result[channel].Name)),
-                    format, bits, sampleRate, samples);
+                    format, bits, sampleRate, samples, minimumPhase);
         }
 
         /// <summary>
         /// Export the filters as C arrays.
         /// </summary>
-        public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples) {
+        public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
             for (int channel = 0; channel < result.Length; ++channel)
                 result[channel].ExportC(Path.Combine(path, string.Format("Channel_{0}.c", result[channel].Name)),
-                    format, bits, sampleRate, samples);
+                    format, bits, sampleRate, samples, minimumPhase);
         }
     }
 }

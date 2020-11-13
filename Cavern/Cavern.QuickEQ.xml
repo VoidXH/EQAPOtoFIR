@@ -362,7 +362,7 @@
         <member name="T:Cavern.QuickEQ.FilterAnalyzer">
             <summary>Measures properties of a filter, like frequency/impulse response, gain, or delay.</summary>
         </member>
-        <member name="F:Cavern.QuickEQ.FilterAnalyzer.resolution">
+        <member name="P:Cavern.QuickEQ.FilterAnalyzer.Resolution">
             <summary>Used FFT size for most measurements.</summary>
         </member>
         <member name="P:Cavern.QuickEQ.FilterAnalyzer.Gain">
@@ -413,10 +413,10 @@
             <summary>Change the filter and the sample rate.</summary>
         </member>
         <member name="M:Cavern.QuickEQ.FilterAnalyzer.GetFrequencyResponse">
-            <summary>Fet the frequency response of the filter.</summary>
+            <summary>Get the frequency response of the filter.</summary>
         </member>
         <member name="M:Cavern.QuickEQ.FilterAnalyzer.GetFrequencyResponseReadonly">
-            <summary>Fet the frequency response of the filter.</summary>
+            <summary>Get the frequency response of the filter.</summary>
         </member>
         <member name="M:Cavern.QuickEQ.FilterAnalyzer.GetSpectrum">
             <summary>Get the absolute of <see cref="P:Cavern.QuickEQ.FilterAnalyzer.FrequencyResponse"/> up to half the sample rate.</summary>
@@ -590,17 +590,21 @@
             <summary>Minimizes the phase of a spectrum.</summary>
             <remarks>This function does not handle zeros in the spectrum. Make sure there is a threshold before using this function.</remarks>
         </member>
-        <member name="M:Cavern.QuickEQ.Equalizer.GetConvolution(System.Int32,System.Int32,System.Single)">
+        <member name="M:Cavern.QuickEQ.Equalizer.GetConvolution(System.Int32,System.Int32,System.Single,Cavern.Utilities.Complex[])">
             <summary>Gets a zero-delay convolution filter with minimally sacrificed phase that results in this EQ when applied.</summary>
             <param name="sampleRate">Sample rate of the target system the convolution filter could be used on</param>
             <param name="length">Length of the convolution filter in samples, must be a power of 2</param>
             <param name="gain">Signal voltage multiplier</param>
+            <param name="initialSpectrum">Custom initial spectrum to apply the EQ on - phases will be corrected, this is not convolved,
+            and has to be twice the size of <paramref name="length"/></param>
         </member>
-        <member name="M:Cavern.QuickEQ.Equalizer.GetLinearConvolution(System.Int32,System.Int32,System.Single)">
+        <member name="M:Cavern.QuickEQ.Equalizer.GetLinearConvolution(System.Int32,System.Int32,System.Single,Cavern.Utilities.Complex[])">
             <summary>Gets a linear phase convolution filter that results in this EQ when applied.</summary>
             <param name="sampleRate">Sample rate of the target system the convolution filter could be used on</param>
             <param name="length">Length of the convolution filter in samples, must be a power of 2</param>
             <param name="gain">Signal voltage multiplier</param>
+            <param name="initialSpectrum">Custom initial spectrum to apply the EQ on - phases will be corrected, this is not convolved,
+            and has to be twice the size of <paramref name="length"/></param>
         </member>
         <member name="M:Cavern.QuickEQ.Equalizer.GetPeakingEQ(System.Int32,System.Double)">
             <summary>Create a peaking EQ filter set with bands at the positions of the EQ's bands to approximate the drawn EQ curve.</summary>

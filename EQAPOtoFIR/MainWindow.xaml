@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EQAPOtoFIR"
         mc:Ignorable="d"
-        Title="Equalizer APO to FIR" Height="228" Width="394">
+        Title="Equalizer APO to FIR" Height="252" Width="394">
     <Grid>
         <GroupBox Header="Configuration" HorizontalAlignment="Left" Height="42" Margin="10,10,0,0" VerticalAlignment="Top" Width="357">
             <Grid>
@@ -40,7 +40,13 @@
                 <RadioButton x:Name="c" Content="C array" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,4,0,0"/>
             </Grid>
         </GroupBox>
-        <Button x:Name="export" Content="Export" HorizontalAlignment="Left" Margin="292,157,0,0" VerticalAlignment="Top" Width="75"
+        <GroupBox Header="Phase response" HorizontalAlignment="Left" Height="45" Margin="10,157,0,-5" VerticalAlignment="Top" Width="180">
+            <Grid>
+                <RadioButton x:Name="minimum" Content="Minimum" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
+                <RadioButton x:Name="unchanged" Content="Unchanged" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="80,4,0,0"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="export" Content="Export" HorizontalAlignment="Left" Margin="292,182,0,0" VerticalAlignment="Top" Width="75"
                 Click="Export" IsEnabled="False"/>
     </Grid>
 </Window>
