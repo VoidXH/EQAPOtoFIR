@@ -531,5 +531,15 @@
         <member name="M:Cavern.Filters.Utilities.QFactor.FromBandwidth(System.Double)">
             <summary>Convert bandwidth to Q-factor.</summary>
         </member>
+        <member name="M:Cavern.Filters.Utilities.QFactor.FromSlope(System.Double,System.Double)">
+            <summary>Convert slope to Q-factor.</summary>
+            <param name="slope">Filter steepness factor</param>
+            <param name="gain">Filter gain in decibels</param>
+        </member>
+        <member name="M:Cavern.Filters.Utilities.QFactor.FromSlopeDecibels(System.Double,System.Double)">
+            <summary>Convert slope to Q-factor.</summary>
+            <param name="slope">Filter steepness in decibels</param>
+            <param name="gain">Filter gain in decibels</param>
+        </member>
     </members>
 </doc>
