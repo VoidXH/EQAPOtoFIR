@@ -5,13 +5,19 @@ using System.Windows;
 
 namespace EQAPOtoFIR {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for the application window.
     /// </summary>
     public partial class MainWindow : Window {
         ConfigParser parser;
 
+        /// <summary>
+        /// Initialize the application window.
+        /// </summary>
         public MainWindow() => InitializeComponent();
 
+        /// <summary>
+        /// Ask the user for a configuration file.
+        /// </summary>
         void Open(object sender, RoutedEventArgs e) {
             OpenFileDialog dialog = new OpenFileDialog {
                 InitialDirectory = "C:\\Program Files\\EqualizerAPO\\config",
@@ -24,6 +30,9 @@ namespace EQAPOtoFIR {
             }
         }
 
+        /// <summary>
+        /// Select a location and export the results.
+        /// </summary>
         void Export(object sender, RoutedEventArgs e) {
             SaveFileDialog dialog = new SaveFileDialog();
             if (wav.IsChecked.Value) {
