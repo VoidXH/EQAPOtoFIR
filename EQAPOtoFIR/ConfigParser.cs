@@ -15,7 +15,9 @@ namespace EQAPOtoFIR {
         public ConfigParser(string path) {
             string[] contents = File.ReadAllLines(path);
             string[] active = new string[] { "ALL" };
-            Dictionary<string, EqualizedChannel> channels = new Dictionary<string, EqualizedChannel>();
+            Dictionary<string, EqualizedChannel> channels = new Dictionary<string, EqualizedChannel> {
+                ["ALL"] = new EqualizedChannel("ALL")
+            };
             for (int line = 0; line < contents.Length; ++line) {
                 if (string.IsNullOrWhiteSpace(contents[line]))
                     continue;
