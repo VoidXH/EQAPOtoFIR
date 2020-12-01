@@ -42,18 +42,24 @@ namespace EQAPOtoFIR {
         /// Export the filters as RIFF WAVE files.
         /// </summary>
         public void ExportWAV(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
-            for (int channel = 0; channel < result.Length; ++channel)
-                result[channel].ExportWAV(Path.Combine(path, string.Format("Channel_{0}.wav", result[channel].Name)),
-                    format, bits, sampleRate, samples, minimumPhase);
+            for (int channel = 0; channel < result.Length; ++channel) {
+                BinaryWriter binaryWriter =
+                    new BinaryWriter(File.Open(Path.Combine(path, string.Format("Channel_{0}.wav", result[channel].Name)), FileMode.Create));
+                RIFFWaveWriter writer = new RIFFWaveWriter(binaryWriter, 1, samples, sampleRate, bits);
+                result[channel].Export(writer, format, minimumPhase);
+            }
         }
 
         /// <summary>
         /// Export the filters as C arrays.
         /// </summary>
         public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
-            for (int channel = 0; channel < result.Length; ++channel)
-                result[channel].ExportC(Path.Combine(path, string.Format("Channel_{0}.c", result[channel].Name)),
-                    format, bits, sampleRate, samples, minimumPhase);
+            for (int channel = 0; channel < result.Length; ++channel) {
+                BinaryWriter binaryWriter =
+                    new BinaryWriter(File.Open(Path.Combine(path, string.Format("Channel_{0}.c", result[channel].Name)), FileMode.Create));
+                CWriter writer = new CWriter(binaryWriter, 1, samples, sampleRate, bits);
+                result[channel].Export(writer, format, minimumPhase);
+            }
         }
     }
 }

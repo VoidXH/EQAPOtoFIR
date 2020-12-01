@@ -85,20 +85,20 @@
         <member name="T:Cavern.Format.AudioWriter">
             <summary>Abstract audio file writer.</summary>
         </member>
-        <member name="F:Cavern.Format.AudioWriter.writer">
-            <summary>File writer object.</summary>
-        </member>
-        <member name="F:Cavern.Format.AudioWriter.channelCount">
+        <member name="P:Cavern.Format.AudioWriter.ChannelCount">
             <summary>Output channel count.</summary>
         </member>
-        <member name="F:Cavern.Format.AudioWriter.length">
+        <member name="P:Cavern.Format.AudioWriter.Length">
             <summary>Output length in samples.</summary>
         </member>
-        <member name="F:Cavern.Format.AudioWriter.sampleRate">
+        <member name="P:Cavern.Format.AudioWriter.SampleRate">
             <summary>Output sample rate.</summary>
         </member>
-        <member name="F:Cavern.Format.AudioWriter.bits">
+        <member name="P:Cavern.Format.AudioWriter.Bits">
             <summary>Output bit depth.</summary>
+        </member>
+        <member name="F:Cavern.Format.AudioWriter.writer">
+            <summary>File writer object.</summary>
         </member>
         <member name="M:Cavern.Format.AudioWriter.#ctor(System.IO.BinaryWriter,System.Int32,System.Int64,System.Int32,Cavern.Format.BitDepth)">
             <summary>Abstract audio file writer.</summary>

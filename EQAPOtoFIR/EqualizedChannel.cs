@@ -5,8 +5,6 @@ using Cavern.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
 
 namespace EQAPOtoFIR {
     /// <summary>
@@ -116,68 +114,19 @@ namespace EQAPOtoFIR {
         }
 
         /// <summary>
-        /// Export the channel's resulting impulse response as a WAV file.
+        /// Use a custom <see cref="AudioWriter"/> to export the filter.
         /// </summary>
-        public void ExportWAV(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
-            RIFFWaveWriter writer = new RIFFWaveWriter(new BinaryWriter(File.Open(path, FileMode.Create)), 1, samples, sampleRate, bits);
+        public void Export(AudioWriter writer, ExportFormat format, bool minimumPhase) {
             Complex[] initialResponse = null;
             if (minimumPhase)
-                initialResponse = GetFilterResponse(sampleRate, samples * 2);
-            float[] output = Result.GetConvolution(sampleRate, samples, 1, initialResponse);
+                initialResponse = GetFilterResponse(writer.SampleRate, (int)writer.Length * 2);
+            float[] output = Result.GetConvolution(writer.SampleRate, (int)writer.Length, 1, initialResponse);
             if (!minimumPhase)
                 ApplyFilters(output);
-            ApplyDelay(output, sampleRate);
+            ApplyDelay(output, writer.SampleRate);
             if (format == ExportFormat.FIR)
                 Array.Reverse(output);
             writer.Write(output);
-        }
-
-        /// <summary>
-        /// Export the channel's resulting impulse response in a C array.
-        /// </summary>
-        public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
-            StringBuilder output = new StringBuilder();
-            Complex[] initialResponse = null;
-            if (minimumPhase)
-                initialResponse = GetFilterResponse(sampleRate, samples * 2);
-            float[] audioSamples = Result.GetConvolution(sampleRate, samples, 1, initialResponse);
-            if (!minimumPhase)
-                ApplyFilters(audioSamples);
-            ApplyDelay(audioSamples, sampleRate);
-            if (format == ExportFormat.FIR)
-                Array.Reverse(audioSamples);
-            switch (bits) {
-                case BitDepth.Int8: {
-                        output.Append("unsigned char samples[").Append(samples).Append("] = { ");
-                        byte[] conv = new byte[samples];
-                        for (int i = 0; i < samples; ++i)
-                            conv[i] = (byte)((audioSamples[i] + 1) * 127f);
-                        output.Append(string.Join(", ", conv)).Append("};");
-                        break;
-                    }
-                case BitDepth.Int16: {
-                        output.Append("short samples[").Append(samples).Append("] = { ");
-                        short[] conv = new short[samples];
-                        for (int i = 0; i < samples; ++i)
-                            conv[i] = (short)(audioSamples[i] * 32767f);
-                        output.Append(string.Join(", ", conv)).Append("};");
-                        break;
-                    }
-                case BitDepth.Int24: {
-                        output.Append("int samples[").Append(samples).Append("] = { ");
-                        int[] conv = new int[samples];
-                        for (int i = 0; i < samples; ++i)
-                            conv[i] = (int)(audioSamples[i] * 8388607f);
-                        output.Append(string.Join(", ", conv)).Append("};");
-                        break;
-                    }
-                case BitDepth.Float32:
-                    output.Append("float samples[").Append(samples).Append("] = { ").Append(string.Join(", ", audioSamples)).Append("};");
-                    break;
-                default:
-                    break;
-            }
-            File.WriteAllText(path, output.ToString());
         }
     }
 }
