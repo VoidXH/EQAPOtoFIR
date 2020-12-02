@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EQAPOtoFIR"
         mc:Ignorable="d"
-        Title="Equalizer APO to FIR" Height="252" Width="394">
+        Title="Equalizer APO to FIR" Height="252" Width="404">
     <Grid>
         <GroupBox Header="Configuration" Height="42" Margin="10,10,10,0" VerticalAlignment="Top">
             <Grid>
@@ -34,20 +34,21 @@
                 <RadioButton x:Name="fir" Content="FIR" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,4,0,0"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Format" Height="45" Margin="220,107,10,0" VerticalAlignment="Top">
+        <GroupBox Header="Format" Height="64" Margin="220,107,10,0" VerticalAlignment="Top">
             <Grid>
                 <RadioButton x:Name="wav" Content="WAVE" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
-                <RadioButton x:Name="c" Content="C array" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,4,0,0"/>
+                <RadioButton x:Name="c" Content="C array" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="69,4,0,0"/>
+                <RadioButton x:Name="hls" Content="HLS optimization" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,24,0,0"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Phase response" HorizontalAlignment="Left" Height="45" Margin="90,157,0,0" VerticalAlignment="Top" Width="197">
+        <GroupBox Header="Phase response" HorizontalAlignment="Left" Height="45" Margin="10,157,0,0" VerticalAlignment="Top" Width="205">
             <Grid>
                 <RadioButton x:Name="minimum" Content="Minimum" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0" IsChecked="True"/>
                 <RadioButton x:Name="unchanged" Content="Unchanged" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="90,4,0,0"/>
             </Grid>
         </GroupBox>
-        <Button Content="by VoidX" HorizontalAlignment="Left" Margin="10,173,0,0" VerticalAlignment="Top" Width="75" Click="Ad_Click"/>
-        <Button x:Name="export" Content="Export" Margin="292,173,0,0"
-                Click="Export" IsEnabled="False" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Top"/>
+        <Button Content="by VoidX" Margin="0,0,90,10" Click="Ad_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
+        <Button x:Name="export" Content="Export" Margin="0,0,10,10"
+                Click="Export" IsEnabled="False" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
     </Grid>
 </Window>

@@ -39,9 +39,12 @@ namespace EQAPOtoFIR {
             if (wav.IsChecked.Value) {
                 dialog.FileName = "Channel_ALL.wav";
                 dialog.Filter = "RIFF WAVE files (*.wav)|*.wav";
-            } else {
+            } else if (c.IsChecked.Value) {
                 dialog.FileName = "Channel_ALL.c";
                 dialog.Filter = "C source files (*.c)|*.c";
+            } else {
+                dialog.FileName = "Channel_ALL.txt";
+                dialog.Filter = "Text files (*.txt)|*.txt";
             }
             if (dialog.ShowDialog() == true) {
                 BitDepth bits = BitDepth.Float32;
@@ -55,8 +58,11 @@ namespace EQAPOtoFIR {
                 if (wav.IsChecked.Value)
                     parser.ExportWAV(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
                         minimum.IsChecked.Value);
-                else
+                else if (c.IsChecked.Value)
                     parser.ExportC(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
+                        minimum.IsChecked.Value);
+                else
+                    parser.ExportHLS(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
                         minimum.IsChecked.Value);
             }
         }

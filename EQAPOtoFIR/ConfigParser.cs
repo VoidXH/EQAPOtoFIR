@@ -61,5 +61,17 @@ namespace EQAPOtoFIR {
                 result[channel].Export(writer, format, minimumPhase);
             }
         }
+
+        /// <summary>
+        /// Export the filters as HLS additions.
+        /// </summary>
+        public void ExportHLS(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
+            for (int channel = 0; channel < result.Length; ++channel) {
+                BinaryWriter binaryWriter =
+                    new BinaryWriter(File.Open(Path.Combine(path, string.Format("Channel_{0}.txt", result[channel].Name)), FileMode.Create));
+                HLSWriter writer = new HLSWriter(binaryWriter, 1, samples, sampleRate, bits);
+                result[channel].ExportInBlocks(writer, format, minimumPhase, 64);
+            }
+        }
     }
 }

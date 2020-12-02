@@ -114,9 +114,9 @@ namespace EQAPOtoFIR {
         }
 
         /// <summary>
-        /// Use a custom <see cref="AudioWriter"/> to export the filter.
+        /// Generate filter samples.
         /// </summary>
-        public void Export(AudioWriter writer, ExportFormat format, bool minimumPhase) {
+        float[] GenerateOutput(AudioWriter writer, ExportFormat format, bool minimumPhase) {
             Complex[] initialResponse = null;
             if (minimumPhase)
                 initialResponse = GetFilterResponse(writer.SampleRate, (int)writer.Length * 2);
@@ -126,7 +126,26 @@ namespace EQAPOtoFIR {
             ApplyDelay(output, writer.SampleRate);
             if (format == ExportFormat.FIR)
                 Array.Reverse(output);
+            return output;
+        }
+
+        /// <summary>
+        /// Use a custom <see cref="AudioWriter"/> to export the filter.
+        /// </summary>
+        public void Export(AudioWriter writer, ExportFormat format, bool minimumPhase) {
+            float[] output = GenerateOutput(writer, format, minimumPhase);
             writer.Write(output);
+        }
+
+        /// <summary>
+        /// Use a custom <see cref="AudioWriter"/> to export the filter in multiple blocks of a given size.
+        /// </summary>
+        public void ExportInBlocks(AudioWriter writer, ExportFormat format, bool minimumPhase, int blockSize) {
+            float[] output = GenerateOutput(writer, format, minimumPhase);
+            writer.WriteHeader();
+            for (int i = 0; i < output.Length;)
+                writer.WriteBlock(output, i, i += blockSize);
+            writer.Dispose();
         }
     }
 }
