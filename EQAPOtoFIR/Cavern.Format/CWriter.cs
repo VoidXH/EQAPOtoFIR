@@ -5,11 +5,6 @@ using System.Text;
 namespace Cavern.Format {
     /// <summary>C array writer.</summary>
     public class CWriter : AudioWriter {
-        /// <summary>
-        /// Exported block ID.
-        /// </summary>
-        int block;
-
         /// <summary>C array writer.</summary>
         /// <param name="writer">File writer object</param>
         /// <param name="channelCount">Output channel count</param>
