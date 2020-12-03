@@ -1,4 +1,5 @@
 ﻿using Cavern.Format;
+using EQAPOtoFIR.Dialogs;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
@@ -35,6 +36,14 @@ namespace EQAPOtoFIR {
         /// Select a location and export the results.
         /// </summary>
         void Export(object sender, RoutedEventArgs e) {
+            int segments = 1;
+            if (c.IsChecked.Value) {
+                SegmentsDialog segmentDialog = new SegmentsDialog();
+                if (segmentDialog.ShowDialog() == true)
+                    segments = segmentDialog.Segments;
+                else
+                    return;
+            }
             SaveFileDialog dialog = new SaveFileDialog();
             if (wav.IsChecked.Value) {
                 dialog.FileName = "Channel_ALL.wav";
@@ -60,7 +69,7 @@ namespace EQAPOtoFIR {
                         minimum.IsChecked.Value);
                 else if (c.IsChecked.Value)
                     parser.ExportC(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
-                        minimum.IsChecked.Value);
+                        minimum.IsChecked.Value, segments);
                 else
                     parser.ExportHLS(Path.GetDirectoryName(dialog.FileName), format, bits, sampleRate.Value, fftSize.Value,
                         minimum.IsChecked.Value);

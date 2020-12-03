@@ -53,12 +53,12 @@ namespace EQAPOtoFIR {
         /// <summary>
         /// Export the filters as C arrays.
         /// </summary>
-        public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase) {
+        public void ExportC(string path, ExportFormat format, BitDepth bits, int sampleRate, int samples, bool minimumPhase, int blocks) {
             for (int channel = 0; channel < result.Length; ++channel) {
                 BinaryWriter binaryWriter =
                     new BinaryWriter(File.Open(Path.Combine(path, string.Format("Channel_{0}.c", result[channel].Name)), FileMode.Create));
                 CWriter writer = new CWriter(binaryWriter, 1, samples, sampleRate, bits);
-                result[channel].Export(writer, format, minimumPhase);
+                result[channel].ExportInBlocks(writer, format, minimumPhase, samples / blocks);
             }
         }
 

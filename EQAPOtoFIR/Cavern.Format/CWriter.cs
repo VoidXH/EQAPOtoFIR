@@ -1,9 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace Cavern.Format {
     /// <summary>C array writer.</summary>
     public class CWriter : AudioWriter {
+        /// <summary>
+        /// Exported block ID.
+        /// </summary>
+        int block;
+
         /// <summary>C array writer.</summary>
         /// <param name="writer">File writer object</param>
         /// <param name="channelCount">Output channel count</param>
@@ -16,6 +22,26 @@ namespace Cavern.Format {
         /// <summary>Create the file header.</summary>
         public override void WriteHeader() { }
 
+        static void CutZeros<T>(ref T[] arr) where T: IComparable {
+            int newLength = arr.Length;
+            while (newLength > 0) {
+                if (arr[--newLength].CompareTo(default(T)) != 0) {
+                    ++newLength;
+                    break;
+                }
+            }
+            Array.Resize(ref arr, newLength);
+        }
+
+        void WriteBlock<T>(StringBuilder output, T[] conv, long sourceLength, long from, long to, string typename) where T: IComparable {
+            if (from == 0)
+                output.Append(string.Format("{0} samples[{1}][{2}] = {{", typename, sourceLength / (to - from), to - from));
+            CutZeros(ref conv);
+            output.Append(Environment.NewLine).Append("\t{ ").Append(string.Join(", ", conv)).Append(" },");
+            if (to == sourceLength)
+                output.Append(Environment.NewLine).Append("};");
+        }
+
         /// <summary>Write a block of samples.</summary>
         /// <param name="samples">Samples to write</param>
         /// <param name="from">Start position in the input array (inclusive)</param>
@@ -24,31 +50,31 @@ namespace Cavern.Format {
             StringBuilder output = new StringBuilder();
             switch (Bits) {
                 case BitDepth.Int8: {
-                        output.Append("unsigned char samples[").Append(Length).Append("] = { ");
-                        byte[] conv = new byte[Length];
-                        for (long i = 0; i < Length; ++i)
-                            conv[i] = (byte)((samples[i] + 1) * 127f);
-                        output.Append(string.Join(", ", conv)).Append("};");
+                        byte[] conv = new byte[to - from];
+                        for (long i = from; i < to; ++i)
+                            conv[i - from] = (byte)((samples[i] + 1) * 127f);
+                        WriteBlock(output, conv, samples.Length, from, to, "unsigned char");
                         break;
                     }
                 case BitDepth.Int16: {
-                        output.Append("short samples[").Append(Length).Append("] = { ");
-                        short[] conv = new short[Length];
-                        for (long i = 0; i < Length; ++i)
-                            conv[i] = (short)(samples[i] * 32767f);
-                        output.Append(string.Join(", ", conv)).Append("};");
+                        short[] conv = new short[to - from];
+                        for (long i = from; i < to; ++i)
+                            conv[i - from] = (short)(samples[i] * 32767f);
+                        WriteBlock(output, conv, samples.Length, from, to, "short");
                         break;
                     }
                 case BitDepth.Int24: {
-                        output.Append("int samples[").Append(Length).Append("] = { ");
-                        int[] conv = new int[Length];
-                        for (long i = 0; i < Length; ++i)
-                            conv[i] = (int)(samples[i] * 8388607f);
-                        output.Append(string.Join(", ", conv)).Append("};");
+                        int[] conv = new int[to - from];
+                        for (long i = from; i < to; ++i)
+                            conv[i - from] = (int)(samples[i] * 8388607f);
+                        WriteBlock(output, conv, samples.Length, from, to, "int");
                         break;
                     }
                 case BitDepth.Float32:
-                    output.Append("float samples[").Append(Length).Append("] = { ").Append(string.Join(", ", samples)).Append("};");
+                    float[] export = new float[to - from];
+                    for (long i = from; i < to; ++i)
+                        export[i - from] = samples[i];
+                    WriteBlock(output, export, samples.Length, from, to, "float");
                     break;
                 default:
                     break;
