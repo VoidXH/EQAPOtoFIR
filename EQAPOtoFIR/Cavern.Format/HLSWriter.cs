@@ -88,8 +88,48 @@ namespace Cavern.Format {
                     code.AppendLine($"\t{name}_{i} = {name}_{i - 1};");
                 code.AppendLine($"\t{name}_0 = newSample;").AppendLine();
 
+                // Optimization: try distribute single multipliers to multiple but non-single multipliers
+                List<long> removal = new List<long>();
+                foreach (KeyValuePair<long, List<long>> kv in convolution) {
+                    if (kv.Value.Count != 1)
+                        continue;
+                    bool found = false;
+                    foreach (KeyValuePair<long, List<long>> i in convolution) {
+                        if (found || i.Value.Count == 1)
+                            continue;
+                        foreach (KeyValuePair<long, List<long>> j in convolution) {
+                            if (i.Key == j.Key || j.Value.Count == 1)
+                                continue;
+                            if (i.Key + j.Key == kv.Key) {
+                                found = true;
+                                i.Value.AddRange(kv.Value);
+                                j.Value.AddRange(kv.Value);
+                                removal.Add(kv.Key);
+                                break;
+                            }
+                        }
+                    }
+                }
+                for (int i = 0, c = removal.Count; i < c; ++i)
+                    convolution.Remove(removal[i]);
+
+                // Optimization: move negative multipliers to positive ones as subtraction
+                removal.Clear();
+                foreach (KeyValuePair<long, List<long>> kv in convolution) {
+                    if (kv.Key < 0) {
+                        foreach (KeyValuePair<long, List<long>> cp in convolution) {
+                            if (cp.Key == -kv.Key) {
+                                for (int i = 0, c = kv.Value.Count; i < c; ++i)
+                                    cp.Value.Add(-kv.Value[i]);
+                                removal.Add(kv.Key);
+                            }
+                        }
+                    }
+                }
+                for (int i = 0, c = removal.Count; i < c; ++i)
+                    convolution.Remove(removal[i]);
+
                 // First result block calculation
-                // TODO: remove as many multiplications as possible (divide one kv between 2 others)
                 int sums = 0;
                 foreach (KeyValuePair<long, List<long>> kv in convolution) {
                     code.Append("\tResultSample sum").Append(sums++).Append(" = (");
@@ -97,9 +137,11 @@ namespace Cavern.Format {
                     foreach (long v in kv.Value) {
                         if (first)
                             first = false;
-                        else
+                        else if (v > 0)
                             code.Append(" + ");
-                        code.Append(name).Append('_').Append(v);
+                        else // By the mechanics of the optimizer, it can't happen that the first item in kv.Value is < 0
+                            code.Append(" - ");
+                        code.Append(name).Append('_').Append(Math.Abs(v));
                     }
                     code.Append(')');
                     if (kv.Key != 1)
