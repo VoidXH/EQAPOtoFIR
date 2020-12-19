@@ -21,27 +21,6 @@ namespace Cavern.Format {
         readonly Dictionary<long, List<long>> convolution = new Dictionary<long, List<long>>();
         long bufferLength = 0;
 
-        void SplitMerge(int layer, long count, StringBuilder output) {
-            string src = layer == 0 ? "sum" : $"res{layer}_", dst = $"res{layer+1}_";
-
-            if (count == 1) {
-                output.AppendLine($"\treturn (Sample)({src}0 / MAX_VALUE);");
-                return;
-            }
-            if (count == 2) {
-                output.AppendLine($"\treturn (Sample)(({src}0 + {src}1) / MAX_VALUE);");
-                return;
-            }
-
-            for (long i = 0; i < (count + 1) / 2; ++i) {
-                output.Append("\tResultSample ").Append(dst).Append(i).Append(" = ").Append(src).Append(2 * i);
-                if (2 * i + 1 < count)
-                    output.Append(" + ").Append(src).Append(2 * i + 1);
-                output.AppendLine(";");
-            }
-            SplitMerge(layer + 1, (count + 1) / 2, output);
-        }
-
         /// <summary>Write a block of samples.</summary>
         /// <param name="samples">Samples to write</param>
         /// <param name="from">Start position in the input array (inclusive)</param>
@@ -65,10 +44,7 @@ namespace Cavern.Format {
                         }
                         break;
                     }
-                case BitDepth.Float32: {
-                        // TODO
-                        break;
-                    }
+                case BitDepth.Float32:
                 default:
                     break;
             }
@@ -76,12 +52,13 @@ namespace Cavern.Format {
                 StringBuilder code = new StringBuilder();
                 string name = "i" + new Random().Next(0, int.MaxValue);
 
+                if (Bits == BitDepth.Float32)
+                    bufferLength = to;
+
                 // Buffer variables
                 for (long i = 0; i <= bufferLength; ++i)
                     code.AppendLine($"Sample {name}_{i};");
-                code.AppendLine();
-
-                code.AppendLine("Sample convolution(Sample newSample) {");
+                code.AppendLine().AppendLine("Sample convolution(Sample newSample) {");
 
                 // Buffer handling (shift register)
                 for (long i = bufferLength; i > 0; --i)
@@ -129,30 +106,31 @@ namespace Cavern.Format {
                 for (int i = 0, c = removal.Count; i < c; ++i)
                     convolution.Remove(removal[i]);
 
-                // First result block calculation
-                int sums = 0;
-                foreach (KeyValuePair<long, List<long>> kv in convolution) {
-                    code.Append("\tResultSample sum").Append(sums++).Append(" = (");
-                    bool first = true;
-                    foreach (long v in kv.Value) {
-                        if (first)
-                            first = false;
-                        else if (v > 0)
-                            code.Append(" + ");
-                        else // By the mechanics of the optimizer, it can't happen that the first item in kv.Value is < 0
-                            code.Append(" - ");
-                        code.Append(name).Append('_').Append(Math.Abs(v));
+                // Result calculation
+                code.AppendLine("\tResultSample res = 0;");
+                if (Bits == BitDepth.Float32) { // Floats
+                    for (long i = 0; i < to; ++i)
+                        code.AppendLine($"\tres += {name}_{i} * {samples[i].ToString().Replace(',', '.')}f;");
+                } else { // Integers
+                    foreach (KeyValuePair<long, List<long>> kv in convolution) {
+                        code.Append("\tres += (");
+                        bool first = true;
+                        foreach (long v in kv.Value) {
+                            if (first)
+                                first = false;
+                            else if (v > 0)
+                                code.Append(" + ");
+                            else // By the mechanics of the optimizer, it can't happen that the first item in kv.Value is < 0
+                                code.Append(" - ");
+                            code.Append(name).Append('_').Append(Math.Abs(v));
+                        }
+                        code.Append(')');
+                        if (kv.Key != 1)
+                            code.Append(" * (ResultSample)").Append(kv.Key);
+                        code.AppendLine(";");
                     }
-                    code.Append(')');
-                    if (kv.Key != 1)
-                        code.Append(" * ").Append(kv.Key);
-                    code.AppendLine(";");
                 }
-
-                // Split merge - this is a compilation speed optimization, not an actual optimization
-                SplitMerge(0, sums, code);
-
-                code.AppendLine("}");
+                code.AppendLine("\treturn res;").AppendLine("}");
 
                 string result = code.ToString();
                 for (int i = 0; i < result.Length; ++i)
